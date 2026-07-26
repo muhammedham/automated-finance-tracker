@@ -12,9 +12,9 @@ A robust, offline-first personal finance tracker built with Flutter. MyWallet au
 
 ## 📱 Screenshots
 
-| Dashboard | Transaction History |
+| Dashboard | SideBar |
 | :---: | :---: |
-| ![Dashboard](ss1.jpg) | ![History](ss2.jpg) |
+| ![Dashboard](ss1.jpeg) | ![SideBar](ss2.jpeg) |
 
 ## 🛠 Tech Stack
 
