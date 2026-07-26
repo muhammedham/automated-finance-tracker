@@ -1,0 +1,62 @@
+name: mywallet
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.12.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^3.3.2
+  sqflite: ^2.4.3
+  path: ^1.9.1
+  enough_mail: ^2.1.7
+  shared_preferences: ^2.2.3
+  flutter_local_notifications: ^17.1.2
+  cupertino_icons: ^1.0.8
+  intl: ^0.20.3
+  fl_chart: ^1.2.0
+  flutter_native_splash: ^2.4.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_launcher_icons: ^0.13.1
+  flutter_lints: ^6.0.0
+
+flutter_icons:
+  android: true 
+  ios: true
+  image_path: "assets/app_icon.png"
+  min_sdk_android: 21
+
+# Native splash screen config (generates the Android/iOS launch screen).
+# After editing this, regenerate with: dart run flutter_native_splash:create
+flutter_native_splash:
+  color: "291528"
+  image: assets/splash/splash_logo.png
+  color_dark: "291528"
+  image_dark: assets/splash/splash_logo.png
+  android_12:
+    color: "291528"
+    image: assets/splash/splash_logo.png
+    color_dark: "291528"
+    image_dark: assets/splash/splash_logo.png
+  android: true
+  ios: true
+  web: false
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/app_icon.png
+    - assets/splash/splash_logo.png
+
+  fonts:
+    - family: dmsans
+      fonts:
+        - asset: assets/fonts/dmsans.ttf
