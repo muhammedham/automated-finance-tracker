@@ -61,8 +61,7 @@ class ZiraatParser {
       // 3. Replace multiple spaces, tabs, or newlines with a single space
       cleanBody = cleanBody.replaceAll(RegExp(r'\s+'), ' ').trim();
 
-      // DEBUGGING: Look at your IDE Terminal when you hit Sync to see this text!
-      print("CLEANED EMAIL BODY: $cleanBody");
+
 
       // Now run the regex on the perfectly clean string
       final incomingMatch = _incomingRegex.firstMatch(cleanBody);
@@ -115,8 +114,6 @@ class ZiraatParser {
         isAutomated: true,
       );
     } catch (e) {
-      // DEBUGGING: Tells us if the Regex worked but the Date/Math failed
-      print("PARSING ERROR: $e"); 
       return null;
     }
   }
