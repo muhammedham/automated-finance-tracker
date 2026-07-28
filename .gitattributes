@@ -1,1 +1,6 @@
-*.html linguist-detectable=false
+ios/** linguist-vendored
+android/** linguist-vendored
+macos/** linguist-vendored
+linux/** linguist-vendored
+windows/** linguist-vendored
+web/** linguist-vendored
