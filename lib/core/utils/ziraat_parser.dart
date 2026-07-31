@@ -17,12 +17,16 @@ class ZiraatParser {
   );
 
   // 3. FAST Outgoing (Bulletproofed for IBANs and HTML spacing)
-  // Ignores all words with Turkish characters that might be HTML encoded.
-  // Jumps straight from "FAST ile" -> "Name" -> "TR (IBAN)" -> "Amount"
   static final _fastOutgoingRegex = RegExp(
     r"(\d{2}\.\d{2}\.\d{4}).*?FAST\s+ile\s+(.*?)\s+TR[A-Z0-9\*\s]+.*?([\d\.,]+)\s*TL",
     caseSensitive: false,
     dotAll: true,
+  );
+
+  // 4. Matches Ziraat ATM Withdrawal emails
+  static final _atmWithdrawalRegex = RegExp(
+    r"(\d{2}\.\d{2}\.\d{4})\s+saat\s+(\d{2}:\d{2})'de.*?\s+([\d\.,]+)\s*TL\s+tutarli\s+para\s+cekme\s+islemi\s+yapilmistir",
+    caseSensitive: false,
   );
 
   // Try to extract a human-friendly category from the email body.
@@ -61,15 +65,43 @@ class ZiraatParser {
       // 3. Replace multiple spaces, tabs, or newlines with a single space
       cleanBody = cleanBody.replaceAll(RegExp(r'\s+'), ' ').trim();
 
+      // ======================================================================
+      // --- NEW ATM WITHDRAWAL CHECK ---
+      // We check this first because its regex groups are different (no receiver name)
+      // ======================================================================
+      final atmMatch = _atmWithdrawalRegex.firstMatch(cleanBody);
+      if (atmMatch != null) {
+        // 1. Parse Date
+        final String rawDate = atmMatch.group(1)!;
+        final DateFormat format = DateFormat('dd.MM.yyyy');
+        final DateTime date = format.parse(rawDate);
 
+        // 2. Parse Amount
+        String rawAmount = atmMatch.group(3)!;
+        rawAmount = rawAmount.replaceAll('.', '').replaceAll(',', '.');
+        final double amountValue = double.parse(rawAmount);
+        final int amountInMinorUnits = (amountValue * 100).round();
 
-      // Now run the regex on the perfectly clean string
+        return TransactionModel(
+          accountId: defaultAccountId,
+          categoryId: outgoingCategoryId, // It's a withdrawal, so it's outgoing
+          amount: amountInMinorUnits,
+          date: date,
+          receiver: 'Ziraat ATM',
+          note: 'To: Ziraat ATM (Auto) • Category: Bank Transactions',
+          isAutomated: true,
+        );
+      }
+
+      // ======================================================================
+      // --- STANDARD TRANSACTIONS CHECK ---
+      // ======================================================================
       final incomingMatch = _incomingRegex.firstMatch(cleanBody);
       final outgoingMatch = _outgoingRegex.firstMatch(cleanBody);
       final fastOutgoingMatch = _fastOutgoingRegex.firstMatch(cleanBody);
 
       if (incomingMatch == null && outgoingMatch == null && fastOutgoingMatch == null) {
-        return null;
+        return null; // No regex matched, exit gracefully
       }
 
       final isIncoming = incomingMatch != null;
